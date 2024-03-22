@@ -23,14 +23,20 @@ const EmptyUsefulPlayer = ({
 )
 
 export default function UsefulPlayer() {
+  const blob = window.URL
   const [hasFile, setHasFile] = useState(false)
+  const [fileUrl, setFileUrl] = useState<null | string>(null)
   const handleFileInput = (file: File | undefined) => {
+    if (typeof file === 'undefined') {
+      return
+    }
     console.log({ file })
+    setFileUrl(blob.createObjectURL(file))
     setHasFile(true)
   }
-  if (!hasFile) {
+  if (!hasFile || !fileUrl) {
     return <EmptyUsefulPlayer onFileInput={handleFileInput} />
   }
 
-  return <h1>File was handled</h1>
+  return <audio controls autoPlay src={fileUrl} />
 }
