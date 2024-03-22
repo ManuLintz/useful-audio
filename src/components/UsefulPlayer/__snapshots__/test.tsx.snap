@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<Avatar /> > should render the medium Avatar as default 1`] = `
+<img
+  alt="Avatar"
+  class="inline-block rounded-full w-12 h-12"
+  src="https://gravatar.com/4405735f6f3129e0286d9d43e7b460d0"
+/>
+`;
