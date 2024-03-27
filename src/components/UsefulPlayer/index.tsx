@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { getFrequencies } from './getFrequencies'
+import { Lut } from 'three/addons/math/Lut.js'
 
 const EmptyUsefulPlayer = ({
   onFileInput
@@ -26,17 +28,52 @@ export default function UsefulPlayer() {
   const blob = window.URL
   const [hasFile, setHasFile] = useState(false)
   const [fileUrl, setFileUrl] = useState<null | string>(null)
-  const handleFileInput = (file: File | undefined) => {
+  const [frequencies, setFrequencies] = useState<null | Uint8Array[]>(null)
+  const lut = new Lut('blackbody', 300)
+
+  const handleFileInput = async (file: File | undefined) => {
     if (typeof file === 'undefined') {
       return
     }
     console.log({ file })
     setFileUrl(blob.createObjectURL(file))
     setHasFile(true)
+
+    // Test to get frequencies
+    const arrayBuffer = await file.arrayBuffer()
+    const audioContext = new AudioContext()
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+    const computedFrequencies = getFrequencies(audioBuffer)
+    setFrequencies(computedFrequencies)
+    // console.log({ computedFrequencies })
   }
   if (!hasFile || !fileUrl) {
     return <EmptyUsefulPlayer onFileInput={handleFileInput} />
   }
 
-  return <audio controls autoPlay src={fileUrl} />
+  return (
+    <div>
+      <audio controls autoPlay src={fileUrl} />
+      {frequencies && (
+        <div className="flex flex-row">
+          {frequencies.map((amplitudes, amplitudesIndex) => (
+            <div className="flex flex-col-reverse" key={`${amplitudesIndex}`}>
+              {Array.from(amplitudes).map((amplitude, amplitudeIndex) => (
+                <div
+                  key={`${amplitudesIndex}-${amplitudeIndex}`}
+                  style={{
+                    width: '1px',
+                    height: '1px',
+                    backgroundColor: `${lut
+                      .getColor((210 - amplitude) / 210)
+                      .getStyle()}`
+                  }}
+                ></div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
