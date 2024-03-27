@@ -225,7 +225,7 @@ function FFT(
 
 export function getFrequencies(buffer: AudioBuffer): Uint8Array[] {
   // const fftSamples = 4096 // Power of 2
-  const fftSamples = 128
+  const fftSamples = 512
   // Let's do only one channel for now
   // TODO: merge channels further up
   // const channels = buffer.numberOfChannels || 1
@@ -238,7 +238,7 @@ export function getFrequencies(buffer: AudioBuffer): Uint8Array[] {
 
   // This may differ from file samplerate. Browser resamples audio.
   const sampleRate = buffer.sampleRate
-  console.log({ sampleRate })
+  // console.log({ sampleRate })
 
   let noverlap = null
   if (!noverlap) {

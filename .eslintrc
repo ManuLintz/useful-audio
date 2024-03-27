@@ -36,6 +36,9 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "tailwindcss/classnames-order": "warn",
     "tailwindcss/no-custom-classname": "warn",
-    "tailwindcss/no-contradicting-classname": "error"
+    "tailwindcss/no-contradicting-classname": "error",
+    // Because of this strictness, react three element are causing errors because written with lowercase
+    //  https://github.com/jsx-eslint/eslint-plugin-react/issues/3423
+    "react/no-unknown-property": [1, { "ignore": ["position", "args"] }]
   }
 }

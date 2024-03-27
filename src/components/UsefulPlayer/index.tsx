@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { getFrequencies } from './getFrequencies'
-import { Lut } from 'three/addons/math/Lut.js'
+// import { Lut } from 'three/addons/math/Lut.js'
+import SpectrumVisualization from './SpectrumVisualization'
+// import FiberTest from './FiberTest'
 
 const EmptyUsefulPlayer = ({
   onFileInput
@@ -12,16 +14,17 @@ const EmptyUsefulPlayer = ({
     <input
       type="file"
       className="block w-full text-sm text-slate-500
-      file:mr-4 file:rounded-full file:border-0
-      file:bg-violet-50 file:px-4
-      file:py-2 file:text-sm
-      file:font-semibold file:text-violet-700
-      hover:file:bg-violet-100
-"
+        file:mr-4 file:rounded-full file:border-0
+        file:bg-violet-50 file:px-4
+        file:py-2 file:text-sm
+        file:font-semibold file:text-violet-700
+        hover:file:bg-violet-100
+  "
       accept="audio/*"
       onChange={(event) => onFileInput(event.target.files?.[0])}
     />
   </label>
+  // <FiberTest />
 )
 
 export default function UsefulPlayer() {
@@ -29,13 +32,13 @@ export default function UsefulPlayer() {
   const [hasFile, setHasFile] = useState(false)
   const [fileUrl, setFileUrl] = useState<null | string>(null)
   const [frequencies, setFrequencies] = useState<null | Uint8Array[]>(null)
-  const lut = new Lut('blackbody', 300)
+  // const lut = new Lut('blackbody', 300)
 
   const handleFileInput = async (file: File | undefined) => {
     if (typeof file === 'undefined') {
       return
     }
-    console.log({ file })
+    // console.log({ file })
     setFileUrl(blob.createObjectURL(file))
     setHasFile(true)
 
@@ -54,26 +57,7 @@ export default function UsefulPlayer() {
   return (
     <div>
       <audio controls autoPlay src={fileUrl} />
-      {frequencies && (
-        <div className="flex flex-row">
-          {frequencies.map((amplitudes, amplitudesIndex) => (
-            <div className="flex flex-col-reverse" key={`${amplitudesIndex}`}>
-              {Array.from(amplitudes).map((amplitude, amplitudeIndex) => (
-                <div
-                  key={`${amplitudesIndex}-${amplitudeIndex}`}
-                  style={{
-                    width: '1px',
-                    height: '1px',
-                    backgroundColor: `${lut
-                      .getColor((210 - amplitude) / 210)
-                      .getStyle()}`
-                  }}
-                ></div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      {frequencies && <SpectrumVisualization spectrumData={frequencies} />}
     </div>
   )
 }
